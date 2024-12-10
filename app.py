@@ -80,14 +80,6 @@ with col2:
             st.session_state['selected_space'] = "Welcome!"  
             st.rerun()
 
-# Add a delete button for the current space
-if selected_space != "Welcome!":  # Prevent deleting the default space
-    if st.button("Delete Space", key=f"delete_space_{selected_space}"):
-        st.session_state['spaces'].remove(selected_space)
-        del st.session_state['chat_history'][selected_space]
-        st.session_state['selected_space'] = "Welcome!"  # Switch to default space
-        st.rerun()
-
 # Initialize chat history for the selected space if it doesn't exist
 if selected_space not in st.session_state['chat_history']:
     st.session_state['chat_history'][selected_space] = []
