@@ -32,12 +32,6 @@ st.markdown("<style>.stTextArea {margin-top: -1.6rem;}</style>", unsafe_allow_ht
 st.markdown("<style>.stFileUploader {margin-top: -2rem;}</style>", unsafe_allow_html=True)
 st.markdown("<style>.st-emotion-cache-1n47svx {margin-top: 1.1rem;}</style>", unsafe_allow_html=True)
 
-# Initialize session state for spaces and chat history
-if 'spaces' not in st.session_state:
-    st.session_state['spaces'] = []
-if 'chat_history' not in st.session_state:
-    st.session_state['chat_history'] = {}
-
 # Sidebar configuration
 st.sidebar.markdown("# TherapyAI")
 
