@@ -36,7 +36,7 @@ st.markdown("<style>.st-emotion-cache-1n47svx {margin-top: 1.1rem;}</style>", un
 if 'spaces' not in st.session_state:
     st.session_state['spaces'] = []
 if 'chat_history' not in st.session_state:
-    st.session_state['chat_history'] = []
+    st.session_state['chat_history'] = {}
 
 # Sidebar configuration
 st.sidebar.markdown("# TherapyAI")
