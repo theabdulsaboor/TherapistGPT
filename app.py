@@ -124,7 +124,7 @@ if st.button("Get Response"):
             st.markdown(user_prompt)
 
         # Generate and display assistant response in chat message container
-        response = generate_response(user_prompt, tokenizer, model, temperature=0.8, top_k=40)
+        response = generate_response(user_prompt, tokenizer, model, temperature=0.5, top_k=100, top_p=0.9)
         st.session_state['chat_history'][selected_space].append({"role": "assistant", "content": response})
         with st.chat_message("assistant"):
             st.markdown(response)
