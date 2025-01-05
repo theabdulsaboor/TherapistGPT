@@ -11,11 +11,15 @@ def load_model(model_name):
     return tokenizer, model
 
 # Function to generate response
-def generate_response(model_name, prompt, tokenizer, model):
+def generate_response(prompt, tokenizer, model, temperature=0.7, top_k=50, top_p=0.95, max_length=200):
     inputs = tokenizer(prompt, return_tensors="pt")
-    output = model.generate(**inputs, max_length=200)
-    # Convert output tensor to NumPy array and extract token IDs
-    token_ids = output[0].cpu().numpy()  # Assuming you want the first generated sequence
+    output = model.generate(**inputs, 
+                            max_length=max_length,
+                            temperature=temperature,
+                            top_k=top_k,
+                            top_p=top_p,
+                            do_sample=True)  # Enable sampling for temperature, top_k, top_p to take effect
+    token_ids = output[0].cpu().numpy()
     response = tokenizer.decode(token_ids, skip_special_tokens=True)
     return response
 
@@ -120,7 +124,7 @@ if st.button("Get Response"):
             st.markdown(user_prompt)
 
         # Generate and display assistant response in chat message container
-        response = generate_response(selected_model, user_prompt, tokenizer, model)
+        response = generate_response(user_prompt, tokenizer, model, temperature=0.8, top_k=40)
         st.session_state['chat_history'][selected_space].append({"role": "assistant", "content": response})
         with st.chat_message("assistant"):
             st.markdown(response)
