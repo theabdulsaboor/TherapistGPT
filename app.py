@@ -1,4 +1,4 @@
-from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
 import streamlit as st
 import os
 import docx  # For docx files
@@ -22,6 +22,11 @@ def generate_response(prompt, tokenizer, model, temperature=0.7, top_k=50, top_p
     token_ids = output[0].cpu().numpy()
     response = tokenizer.decode(token_ids, skip_special_tokens=True)
     return response
+
+# Function for zero-shot classification
+def classify_input(text, classifier, labels=["therapy", "stress", "health", "lifestyle", "mental health"]):
+    result = classifier(text, candidate_labels=labels)
+    return result
 
 # Set up the Streamlit app with a dark theme
 st.set_page_config(page_title="Therapy Chatbot", layout="wide")
@@ -55,6 +60,9 @@ selected_model = model_mapping[selected_model_name]
 
 # Load the selected model
 tokenizer, model = load_model(selected_model)
+
+# Load zero-shot classifier
+classifier = pipeline('zero-shot-classification', model='facebook/bart-large-mnli')
 
 # Update spaces dropdown
 selected_space = st.sidebar.selectbox("Spaces", st.session_state['spaces'] + ["Welcome!"])
@@ -128,6 +136,12 @@ if st.button("Get Response"):
         st.session_state['chat_history'][selected_space].append({"role": "assistant", "content": response})
         with st.chat_message("assistant"):
             st.markdown(response)
+
+        # Classify the input text using zero-shot classification
+        classification_result = classify_input(user_prompt, classifier)
+        st.session_state['chat_history'][selected_space].append({"role": "assistant", "content": f"Classification Result: {classification_result}"})
+        with st.chat_message("assistant"):
+            st.markdown(f"Classification Result: {classification_result}")
 
         # Increment the key to effectively reset the text area
         st.session_state['text_area_key'] += 1 
