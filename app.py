@@ -53,16 +53,20 @@ st.sidebar.markdown("# TherapistAI")
 # Select AI model
 model_mapping = {
        "gpt2": "theabdulsaboor/gpt2-therapist-finetuned",
-       "distilgpt2": "Mrbean01/uzair_amiin", "gptneo": "Trigonometrippin/gpt2_therapy_generator2", "med": "umar-naveed/med2.4"
+       "distilgpt2": "Mrbean01/uzair_amiin", 
+       "gptneo": "Trigonometrippin/gpt2_therapy_generator2", 
+       "med": "umar-naveed/med2.4",
+       "classifier": "facebook/bart-large-mnli"  # Added classifier model
    }
 selected_model_name = st.sidebar.selectbox("Change Model", list(model_mapping.keys()))  
 selected_model = model_mapping[selected_model_name]
 
-# Load the selected model
-tokenizer, model = load_model(selected_model)
-
-# Load zero-shot classifier
-classifier = pipeline('zero-shot-classification', model='facebook/bart-large-mnli')
+# Load the selected model for response generation (if applicable)
+if selected_model_name != "classifier":
+    tokenizer, model = load_model(selected_model)
+else:
+    # Load the classifier for zero-shot classification
+    classifier = pipeline('zero-shot-classification', model=selected_model)
 
 # Update spaces dropdown
 selected_space = st.sidebar.selectbox("Spaces", st.session_state['spaces'] + ["Welcome!"])
@@ -131,17 +135,18 @@ if st.button("Get Response"):
         with st.chat_message("user"):
             st.markdown(user_prompt)
 
-        # Generate and display assistant response in chat message container
-        response = generate_response(user_prompt, tokenizer, model, temperature=0.8, top_k=40)
-        st.session_state['chat_history'][selected_space].append({"role": "assistant", "content": response})
-        with st.chat_message("assistant"):
-            st.markdown(response)
-
-        # Classify the input text using zero-shot classification
-        classification_result = classify_input(user_prompt, classifier)
-        st.session_state['chat_history'][selected_space].append({"role": "assistant", "content": f"Classification Result: {classification_result}"})
-        with st.chat_message("assistant"):
-            st.markdown(f"Classification Result: {classification_result}")
+        if selected_model_name != "classifier":
+            # Generate and display assistant response in chat message container
+            response = generate_response(user_prompt, tokenizer, model, temperature=0.8, top_k=40)
+            st.session_state['chat_history'][selected_space].append({"role": "assistant", "content": response})
+            with st.chat_message("assistant"):
+                st.markdown(response)
+        else:
+            # Classify the input text using zero-shot classification
+            classification_result = classify_input(user_prompt, classifier)
+            st.session_state['chat_history'][selected_space].append({"role": "assistant", "content": f"Classification Result: {classification_result}"})
+            with st.chat_message("assistant"):
+                st.markdown(f"Classification Result: {classification_result}")
 
         # Increment the key to effectively reset the text area
         st.session_state['text_area_key'] += 1 
