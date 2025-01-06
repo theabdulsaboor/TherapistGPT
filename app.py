@@ -48,7 +48,7 @@ st.sidebar.markdown("# TherapistAI")
 # Select AI model
 model_mapping = {
        "gpt2": "theabdulsaboor/gpt2-therapist-finetuned",
-       "distilgpt2": "Mrbean01/uzair_amiin", "gptneo": "Trigonometrippin/gpt2_therapy_generator2", "classifier": "distilbert-base-uncased"
+       "distilgpt2": "Mrbean01/uzair_amiin", "gptneo": "Trigonometrippin/gpt2_therapy_generator2", "classifier": "umar-naveed/med2.4"
    }
 selected_model_name = st.sidebar.selectbox("Change Model", list(model_mapping.keys()))  
 selected_model = model_mapping[selected_model_name]
