@@ -43,7 +43,7 @@ if 'chat_history' not in st.session_state:
     st.session_state['chat_history'] = {}
 
 # Sidebar configuration
-st.sidebar.markdown("# TherapyAI")
+st.sidebar.markdown("# TherapistAI")
 
 # Select AI model
 model_mapping = {
